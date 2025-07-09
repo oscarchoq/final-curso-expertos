@@ -2,6 +2,7 @@
 import pygame
 import sys
 import time
+import os
 
 import busqueda as logica
 
@@ -66,6 +67,26 @@ ultimo_movimiento_destino = None
 informacion_ultimo_movimiento = ""
 ultimo_movimiento_fue_ia = False
 
+# Variables para el seguimiento del tiempo de la IA
+tiempo_total_ia = 0.0
+cantidad_movimientos_ia = 0
+tiempos_ia = []  # Lista para almacenar todos los tiempos
+resumen_escrito = False  # Variable para controlar si ya se escribió el resumen de la partida
+
+# Crear la carpeta LogTime si no existe
+if not os.path.exists("LogTime"):
+    os.makedirs("LogTime")
+
+# Generar nombre único para el archivo de log con fecha y hora
+timestamp = time.strftime("%Y%m%d_%H%M%S")
+nombre_archivo_log = f"LogTime/logtime_{timestamp}.txt"
+
+# Inicializar el archivo de log
+with open(nombre_archivo_log, "w", encoding="utf-8") as archivo:
+    archivo.write("=== LOG DE TIEMPOS DE LA IA - JUEGO DE DAMAS ===\n")
+    archivo.write(f"Inicio de sesión: {time.strftime('%Y-%m-%d %H:%M:%S')}\n")
+    archivo.write("="*50 + "\n\n")
+
 def obtener_informacion_movimiento(tablero_antes, tablero_despues, movimiento):
     """
     Determina información sobre el movimiento realizado para mostrar al usuario
@@ -114,27 +135,35 @@ while True:
 
             # Lógica de selección de jugador y modo al inicio
             if jugador_usuario is None or modo_busqueda_alfa_beta is None or nivel_ia_seleccionado is None:
+                # Dimensiones consistentes con el dibujo
+                boton_ancho = 150
+                boton_alto = 45
+                separacion = 60
+                
                 # Botones de elección de jugador
-                boton_blanco = pygame.Rect((VENTANA_ANCHO / 8), (VENTANA_ALTO / 2 - 120), VENTANA_ANCHO / 4, 40)
-                boton_negro = pygame.Rect(5 * (VENTANA_ANCHO / 8), (VENTANA_ALTO / 2 - 120), VENTANA_ANCHO / 4, 40)
+                boton_blanco = pygame.Rect((VENTANA_ANCHO / 2 - boton_ancho - separacion/2), 210, boton_ancho, boton_alto)
+                boton_negro = pygame.Rect((VENTANA_ANCHO / 2 + separacion/2), 210, boton_ancho, boton_alto)
                 
                 # Botones de elección de modo IA
-                boton_alfa_beta = pygame.Rect((VENTANA_ANCHO / 8), (VENTANA_ALTO / 2 - 70), VENTANA_ANCHO / 3, 35)
-                boton_minimax = pygame.Rect((VENTANA_ANCHO / 2 + 20), (VENTANA_ALTO / 2 - 70), VENTANA_ANCHO / 3, 35)
+                boton_alfa_beta = pygame.Rect((VENTANA_ANCHO / 2 - boton_ancho - separacion/2), 330, boton_ancho, boton_alto)
+                boton_minimax = pygame.Rect((VENTANA_ANCHO / 2 + separacion/2), 330, boton_ancho, boton_alto)
                 
                 # Botones de niveles de dificultad
                 botones_nivel = []
+                botones_por_fila = 5
+                boton_nivel_tamano = 60
+                espacio_entre_botones = 20
+                inicio_x = VENTANA_ANCHO / 2 - (botones_por_fila * boton_nivel_tamano + (botones_por_fila - 1) * espacio_entre_botones) / 2
+                
                 for i in range(1, 6):
-                    x = (VENTANA_ANCHO / 6) + (i - 1) * (VENTANA_ANCHO / 6)
-                    y = VENTANA_ALTO / 2 - 20
-                    botones_nivel.append(pygame.Rect(x - 25, y, 50, 30))
+                    x = inicio_x + (i - 1) * (boton_nivel_tamano + espacio_entre_botones)
+                    y = 450
+                    botones_nivel.append(pygame.Rect(x, y, boton_nivel_tamano, boton_nivel_tamano))
 
                 if boton_blanco.collidepoint(posicion_mouse):
-                    time.sleep(0.2)
                     jugador_usuario = logica.JUGADOR_BLANCO
                     jugador_activo = logica.JUGADOR_BLANCO
                 elif boton_negro.collidepoint(posicion_mouse):
-                    time.sleep(0.2)
                     jugador_usuario = logica.JUGADOR_NEGRO
                     jugador_activo = logica.JUGADOR_BLANCO
                 elif boton_alfa_beta.collidepoint(posicion_mouse):
@@ -146,14 +175,18 @@ while True:
                     for i, boton in enumerate(botones_nivel):
                         if boton.collidepoint(posicion_mouse):
                             nivel_ia_seleccionado = i + 1
-                            logica.establecer_nivel_ia(i + 1)
                             break
 
             # Lógica para reiniciar el juego
             elif jugador_activo is not None and logica.es_final(estado_tablero, jugador_activo):
                 boton_reiniciar = pygame.Rect(VENTANA_ANCHO / 3, VENTANA_ALTO - 65, VENTANA_ANCHO / 3, 50)
                 if boton_reiniciar.collidepoint(posicion_mouse):
-                    time.sleep(0.2)
+                    # Escribir separador en el archivo antes de reiniciar
+                    if cantidad_movimientos_ia > 0:
+                        with open(nombre_archivo_log, "a", encoding="utf-8") as archivo:
+                            archivo.write(f"\n--- NUEVA PARTIDA ---\n")
+                            archivo.write(f"Inicio: {time.strftime('%Y-%m-%d %H:%M:%S')}\n\n")
+                    
                     jugador_usuario = None
                     jugador_activo = None
                     estado_tablero = logica.tablero_inicial()
@@ -166,6 +199,11 @@ while True:
                     ultimo_movimiento_destino = None
                     informacion_ultimo_movimiento = ""
                     ultimo_movimiento_fue_ia = False
+                    # Reiniciar variables de seguimiento del tiempo
+                    tiempo_total_ia = 0.0
+                    cantidad_movimientos_ia = 0
+                    tiempos_ia = []
+                    resumen_escrito = False
 
             # Lógica para el movimiento del usuario (solo si es su turno y el juego no ha terminado)
             elif jugador_activo is not None and jugador_usuario == jugador_activo and not logica.es_final(estado_tablero, jugador_activo):
@@ -230,87 +268,92 @@ while True:
 
     # --- Pantalla de Inicio (Selección de Jugador y Modo) ---
     if jugador_usuario is None or modo_busqueda_alfa_beta is None or nivel_ia_seleccionado is None:
+        # Título principal
         titulo_juego = fuente_grande.render("Damas IA", True, COLOR_AZUL_OSCURO)
-        tituloRect = titulo_juego.get_rect(center=(VENTANA_ANCHO / 2, 50))
+        tituloRect = titulo_juego.get_rect(center=(VENTANA_ANCHO / 2, 80))
         pantalla_principal.blit(titulo_juego, tituloRect)
 
         sub_titulo = fuente_pequena.render(f"Tablero {logica.TABLERO_DIM}x{logica.TABLERO_DIM}", True, COLOR_BLANCO)
-        sub_titulo_rect = sub_titulo.get_rect(center=(VENTANA_ANCHO / 2, 90))
+        sub_titulo_rect = sub_titulo.get_rect(center=(VENTANA_ANCHO / 2, 120))
         pantalla_principal.blit(sub_titulo, sub_titulo_rect)
 
-        # Sección de color del jugador
-        seccion_jugador = fuente_pequena.render("Selecciona tu color:", True, COLOR_BLANCO)
-        seccion_jugador_rect = seccion_jugador.get_rect(center=(VENTANA_ANCHO / 2, VENTANA_ALTO / 2 - 150))
+        # Sección 1: Selección de color del jugador
+        seccion_jugador = fuente_pequena.render("1. Selecciona tu color:", True, COLOR_BLANCO)
+        seccion_jugador_rect = seccion_jugador.get_rect(center=(VENTANA_ANCHO / 2, 180))
         pantalla_principal.blit(seccion_jugador, seccion_jugador_rect)
 
-        boton_blanco = pygame.Rect((VENTANA_ANCHO / 8), (VENTANA_ALTO / 2 - 120), VENTANA_ANCHO / 4, 40)
+        # Botones de color centrados y mejor espaciados
+        boton_ancho = 150
+        boton_alto = 45
+        separacion = 60
+        
+        boton_blanco = pygame.Rect((VENTANA_ANCHO / 2 - boton_ancho - separacion/2), 210, boton_ancho, boton_alto)
         texto_blanco = fuente_pequena.render("Blancas", True, COLOR_NEGRO)
         texto_blancoRect = texto_blanco.get_rect(center=boton_blanco.center)
         color_boton = COLOR_VERDE if jugador_usuario == logica.JUGADOR_BLANCO else COLOR_GRIS_CLARO
         pygame.draw.rect(pantalla_principal, color_boton, boton_blanco)
+        pygame.draw.rect(pantalla_principal, COLOR_NEGRO, boton_blanco, 2)
         pantalla_principal.blit(texto_blanco, texto_blancoRect)
 
-        boton_negro = pygame.Rect(5 * (VENTANA_ANCHO / 8), (VENTANA_ALTO / 2 - 120), VENTANA_ANCHO / 4, 40)
+        boton_negro = pygame.Rect((VENTANA_ANCHO / 2 + separacion/2), 210, boton_ancho, boton_alto)
         texto_negro = fuente_pequena.render("Negras", True, COLOR_NEGRO)
         texto_negroRect = texto_negro.get_rect(center=boton_negro.center)
         color_boton = COLOR_VERDE if jugador_usuario == logica.JUGADOR_NEGRO else COLOR_GRIS_CLARO
         pygame.draw.rect(pantalla_principal, color_boton, boton_negro)
+        pygame.draw.rect(pantalla_principal, COLOR_NEGRO, boton_negro, 2)
         pantalla_principal.blit(texto_negro, texto_negroRect)
 
-        # Sección de algoritmo
-        seccion_algoritmo = fuente_pequena.render("Algoritmo de IA:", True, COLOR_BLANCO)
-        seccion_algoritmo_rect = seccion_algoritmo.get_rect(center=(VENTANA_ANCHO / 2, VENTANA_ALTO / 2 - 100))
+        # Sección 2: Algoritmo de IA
+        seccion_algoritmo = fuente_pequena.render("2. Selecciona el algoritmo:", True, COLOR_BLANCO)
+        seccion_algoritmo_rect = seccion_algoritmo.get_rect(center=(VENTANA_ANCHO / 2, 300))
         pantalla_principal.blit(seccion_algoritmo, seccion_algoritmo_rect)
 
-        boton_alfa_beta = pygame.Rect((VENTANA_ANCHO / 8), (VENTANA_ALTO / 2 - 70), VENTANA_ANCHO / 3, 35)
+        boton_alfa_beta = pygame.Rect((VENTANA_ANCHO / 2 - boton_ancho - separacion/2), 330, boton_ancho, boton_alto)
         texto_alfa_beta = fuente_pequena.render("Alfa-Beta", True, COLOR_NEGRO)
         texto_alfa_betaRect = texto_alfa_beta.get_rect(center=boton_alfa_beta.center)
         color_boton = COLOR_VERDE if modo_busqueda_alfa_beta == True else COLOR_GRIS_CLARO
         pygame.draw.rect(pantalla_principal, color_boton, boton_alfa_beta)
+        pygame.draw.rect(pantalla_principal, COLOR_NEGRO, boton_alfa_beta, 2)
         pantalla_principal.blit(texto_alfa_beta, texto_alfa_betaRect)
 
-        boton_minimax = pygame.Rect((VENTANA_ANCHO / 2 + 20), (VENTANA_ALTO / 2 - 70), VENTANA_ANCHO / 3, 35)
+        boton_minimax = pygame.Rect((VENTANA_ANCHO / 2 + separacion/2), 330, boton_ancho, boton_alto)
         texto_minimax = fuente_pequena.render("Minimax", True, COLOR_NEGRO)
         texto_minimaxRect = texto_minimax.get_rect(center=boton_minimax.center)
         color_boton = COLOR_VERDE if modo_busqueda_alfa_beta == False else COLOR_GRIS_CLARO
         pygame.draw.rect(pantalla_principal, color_boton, boton_minimax)
+        pygame.draw.rect(pantalla_principal, COLOR_NEGRO, boton_minimax, 2)
         pantalla_principal.blit(texto_minimax, texto_minimaxRect)
 
-        # Sección de nivel de dificultad
-        seccion_nivel = fuente_pequena.render("Nivel de dificultad:", True, COLOR_BLANCO)
-        seccion_nivel_rect = seccion_nivel.get_rect(center=(VENTANA_ANCHO / 2, VENTANA_ALTO / 2 - 50))
+        # Sección 3: Nivel de dificultad
+        seccion_nivel = fuente_pequena.render("3. Selecciona la dificultad:", True, COLOR_BLANCO)
+        seccion_nivel_rect = seccion_nivel.get_rect(center=(VENTANA_ANCHO / 2, 420))
         pantalla_principal.blit(seccion_nivel, seccion_nivel_rect)
 
         # Botones de niveles
+        botones_por_fila = 5
+        boton_nivel_tamano = 60
+        espacio_entre_botones = 20
+        inicio_x = VENTANA_ANCHO / 2 - (botones_por_fila * boton_nivel_tamano + (botones_por_fila - 1) * espacio_entre_botones) / 2
+        
         for i in range(1, 6):
-            x = (VENTANA_ANCHO / 6) + (i - 1) * (VENTANA_ANCHO / 6)
-            y = VENTANA_ALTO / 2 - 20
-            boton_nivel = pygame.Rect(x - 25, y, 50, 30)
+            x = inicio_x + (i - 1) * (boton_nivel_tamano + espacio_entre_botones)
+            y = 450
+            boton_nivel = pygame.Rect(x, y, boton_nivel_tamano, boton_nivel_tamano)
             
             color_boton = COLOR_VERDE if nivel_ia_seleccionado == i else COLOR_GRIS_CLARO
             pygame.draw.rect(pantalla_principal, color_boton, boton_nivel)
+            pygame.draw.rect(pantalla_principal, COLOR_NEGRO, boton_nivel, 2)
             
             texto_nivel = fuente_pequena.render(str(i), True, COLOR_NEGRO)
             texto_nivel_rect = texto_nivel.get_rect(center=boton_nivel.center)
             pantalla_principal.blit(texto_nivel, texto_nivel_rect)
 
-        # Mostrar información del nivel seleccionado
-        if nivel_ia_seleccionado is not None:
-            info_nivel = logica.NIVELES_DIFICULTAD[nivel_ia_seleccionado]
-            texto_info = f"Nivel {nivel_ia_seleccionado}: {info_nivel['nombre']}"
-            info_texto = fuente_pequena.render(texto_info, True, COLOR_BLANCO)
-            info_rect = info_texto.get_rect(center=(VENTANA_ANCHO / 2, VENTANA_ALTO / 2 + 20))
-            pantalla_principal.blit(info_texto, info_rect)
-            
-            descripcion_texto = info_nivel['descripcion']
-            desc_render = fuente_pequena.render(descripcion_texto, True, COLOR_BLANCO)
-            desc_rect = desc_render.get_rect(center=(VENTANA_ANCHO / 2, VENTANA_ALTO / 2 + 50))
-            pantalla_principal.blit(desc_render, desc_rect)
+
 
         # Verificar si todo está seleccionado
         if jugador_usuario is not None and modo_busqueda_alfa_beta is not None and nivel_ia_seleccionado is not None:
             empezar_texto = fuente_grande.render("¡LISTO PARA JUGAR!", True, COLOR_VERDE)
-            empezar_rect = empezar_texto.get_rect(center=(VENTANA_ANCHO / 2, VENTANA_ALTO - 100))
+            empezar_rect = empezar_texto.get_rect(center=(VENTANA_ANCHO / 2, 550))
             pantalla_principal.blit(empezar_texto, empezar_rect)
 
     else:
@@ -359,6 +402,32 @@ while True:
                 titulo_juego = "¡Empate!"
             else:
                 titulo_juego = f"¡{'Blancas' if ganador == logica.JUGADOR_BLANCO else 'Negras'} ganaron!"
+            
+            # Mostrar estadísticas de tiempo de la IA
+            if cantidad_movimientos_ia > 0:
+                tiempo_promedio = tiempo_total_ia / cantidad_movimientos_ia
+                estadisticas_texto = f"IA realizó {cantidad_movimientos_ia} movimientos"
+                tiempo_texto = f"Tiempo promedio: {tiempo_promedio:.8f} segundos"
+                
+                estadisticas_render = fuente_pequena.render(estadisticas_texto, True, COLOR_BLANCO)
+                tiempo_render = fuente_pequena.render(tiempo_texto, True, COLOR_BLANCO)
+                
+                estadisticas_rect = estadisticas_render.get_rect(center=(VENTANA_ANCHO / 2, 70))
+                tiempo_rect = tiempo_render.get_rect(center=(VENTANA_ANCHO / 2, 100))
+                
+                pantalla_principal.blit(estadisticas_render, estadisticas_rect)
+                pantalla_principal.blit(tiempo_render, tiempo_rect)
+                
+                # Escribir resumen final en el archivo solo una vez
+                if not resumen_escrito:
+                    with open(nombre_archivo_log, "a", encoding="utf-8") as archivo:
+                        archivo.write(f"\n--- RESUMEN DE LA PARTIDA ---\n")
+                        archivo.write(f"Total de movimientos de IA: {cantidad_movimientos_ia}\n")
+                        archivo.write(f"Tiempo total: {tiempo_total_ia:.8f} segundos\n")
+                        archivo.write(f"Tiempo promedio: {tiempo_promedio:.8f} segundos\n")
+                        archivo.write(f"Ganador: {titulo_juego}\n")
+                        archivo.write(f"{'='*50}\n\n")
+                    resumen_escrito = True
         elif jugador_usuario == jugador_activo:
             titulo_juego = f"Tu turno: {'Blancas' if jugador_usuario == logica.JUGADOR_BLANCO else 'Negras'}"
         else:
@@ -367,12 +436,10 @@ while True:
             tituloRect = titulo_render.get_rect(center=(VENTANA_ANCHO / 2, 30))
             pantalla_principal.blit(titulo_render, tituloRect)
             pygame.display.flip()
-            time.sleep(0.1)
 
         if modo_busqueda_alfa_beta is not None and nivel_ia_seleccionado is not None:
-            info_nivel = logica.obtener_nivel_actual()
             modo_texto = "Alfa-Beta" if modo_busqueda_alfa_beta else "Minimax"
-            info_completa = f"IA: {modo_texto} | Nivel {nivel_ia_seleccionado}: {info_nivel['nombre']}"
+            info_completa = f"IA: {modo_texto} | Nivel {nivel_ia_seleccionado}"
             modo_info_texto = fuente_pequena.render(info_completa, True, COLOR_BLANCO)
             modo_info_rect = modo_info_texto.get_rect(center=(VENTANA_ANCHO / 2, VENTANA_ALTO - 40))
             pantalla_principal.blit(modo_info_texto, modo_info_rect)
@@ -392,21 +459,39 @@ while True:
 
         # Lógica para el movimiento de la IA
         if not ggwp and jugador_usuario != jugador_activo:
-            # Mostrar mensaje antes de sleep para que el usuario lo vea
+            # Mostrar mensaje antes de que la IA piense
             titulo_juego = "IA pensando..."
             titulo_render = fuente_grande.render(titulo_juego, True, COLOR_BLANCO)
             tituloRect = titulo_render.get_rect(center=(VENTANA_ANCHO / 2, 30))
             pantalla_principal.blit(titulo_render, tituloRect)
             pygame.display.flip()
             
-            # Usar tiempo de pensamiento según el nivel
-            tiempo_pensamiento = logica.obtener_tiempo_pensamiento()
-            time.sleep(tiempo_pensamiento)
+            # Medir el tiempo que tarda la IA en pensar
+            tiempo_inicio = time.time()
             
             if modo_busqueda_alfa_beta:
                 movimiento_ia = logica.algoritmo_minimax_alfa_beta(estado_tablero, jugador_activo)
             else:
                 movimiento_ia = logica.algoritmo_minimax(estado_tablero, jugador_activo)
+            
+            tiempo_fin = time.time()
+            tiempo_movimiento = tiempo_fin - tiempo_inicio
+            
+            # Registrar el tiempo en las variables y en el archivo
+            tiempo_total_ia += tiempo_movimiento
+            cantidad_movimientos_ia += 1
+            tiempos_ia.append(tiempo_movimiento)
+            
+            # Escribir el tiempo en el archivo logtime.txt
+            with open(nombre_archivo_log, "a", encoding="utf-8") as archivo:
+                if cantidad_movimientos_ia == 1:
+                    # Escribir información de la configuración en el primer movimiento
+                    algoritmo_texto = "Alfa-Beta" if modo_busqueda_alfa_beta else "Minimax"
+                    color_ia = "Negras" if jugador_usuario == logica.JUGADOR_BLANCO else "Blancas"
+                    archivo.write(f"Configuración: {algoritmo_texto} | Nivel {nivel_ia_seleccionado} | IA juega con {color_ia}\n")
+                    archivo.write("-" * 50 + "\n")
+                
+                archivo.write(f"Movimiento {cantidad_movimientos_ia}: {tiempo_movimiento:.8f} segundos\n")
 
             if movimiento_ia:
                 # Actualizar el resaltado del último movimiento para la IA
