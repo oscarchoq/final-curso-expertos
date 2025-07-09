@@ -2,6 +2,7 @@
 import pygame
 import sys
 import time
+import os
 
 import busqueda as logica
 
@@ -65,6 +66,26 @@ ultimo_movimiento_origen = None
 ultimo_movimiento_destino = None
 informacion_ultimo_movimiento = ""
 ultimo_movimiento_fue_ia = False
+
+# Variables para el seguimiento del tiempo de la IA
+tiempo_total_ia = 0.0
+cantidad_movimientos_ia = 0
+tiempos_ia = []  # Lista para almacenar todos los tiempos
+resumen_escrito = False  # Variable para controlar si ya se escribió el resumen de la partida
+
+# Crear la carpeta LogTime si no existe
+if not os.path.exists("LogTime"):
+    os.makedirs("LogTime")
+
+# Generar nombre único para el archivo de log con fecha y hora
+timestamp = time.strftime("%Y%m%d_%H%M%S")
+nombre_archivo_log = f"LogTime/logtime_{timestamp}.txt"
+
+# Inicializar el archivo de log
+with open(nombre_archivo_log, "w", encoding="utf-8") as archivo:
+    archivo.write("=== LOG DE TIEMPOS DE LA IA - JUEGO DE DAMAS ===\n")
+    archivo.write(f"Inicio de sesión: {time.strftime('%Y-%m-%d %H:%M:%S')}\n")
+    archivo.write("="*50 + "\n\n")
 
 def obtener_informacion_movimiento(tablero_antes, tablero_despues, movimiento):
     """
@@ -140,11 +161,9 @@ while True:
                     botones_nivel.append(pygame.Rect(x, y, boton_nivel_tamano, boton_nivel_tamano))
 
                 if boton_blanco.collidepoint(posicion_mouse):
-                    time.sleep(0.2)
                     jugador_usuario = logica.JUGADOR_BLANCO
                     jugador_activo = logica.JUGADOR_BLANCO
                 elif boton_negro.collidepoint(posicion_mouse):
-                    time.sleep(0.2)
                     jugador_usuario = logica.JUGADOR_NEGRO
                     jugador_activo = logica.JUGADOR_BLANCO
                 elif boton_alfa_beta.collidepoint(posicion_mouse):
@@ -162,7 +181,12 @@ while True:
             elif jugador_activo is not None and logica.es_final(estado_tablero, jugador_activo):
                 boton_reiniciar = pygame.Rect(VENTANA_ANCHO / 3, VENTANA_ALTO - 65, VENTANA_ANCHO / 3, 50)
                 if boton_reiniciar.collidepoint(posicion_mouse):
-                    time.sleep(0.2)
+                    # Escribir separador en el archivo antes de reiniciar
+                    if cantidad_movimientos_ia > 0:
+                        with open(nombre_archivo_log, "a", encoding="utf-8") as archivo:
+                            archivo.write(f"\n--- NUEVA PARTIDA ---\n")
+                            archivo.write(f"Inicio: {time.strftime('%Y-%m-%d %H:%M:%S')}\n\n")
+                    
                     jugador_usuario = None
                     jugador_activo = None
                     estado_tablero = logica.tablero_inicial()
@@ -175,6 +199,11 @@ while True:
                     ultimo_movimiento_destino = None
                     informacion_ultimo_movimiento = ""
                     ultimo_movimiento_fue_ia = False
+                    # Reiniciar variables de seguimiento del tiempo
+                    tiempo_total_ia = 0.0
+                    cantidad_movimientos_ia = 0
+                    tiempos_ia = []
+                    resumen_escrito = False
 
             # Lógica para el movimiento del usuario (solo si es su turno y el juego no ha terminado)
             elif jugador_activo is not None and jugador_usuario == jugador_activo and not logica.es_final(estado_tablero, jugador_activo):
@@ -324,7 +353,7 @@ while True:
         # Verificar si todo está seleccionado
         if jugador_usuario is not None and modo_busqueda_alfa_beta is not None and nivel_ia_seleccionado is not None:
             empezar_texto = fuente_grande.render("¡LISTO PARA JUGAR!", True, COLOR_VERDE)
-            empezar_rect = empezar_texto.get_rect(center=(VENTANA_ANCHO / 2, 590))
+            empezar_rect = empezar_texto.get_rect(center=(VENTANA_ANCHO / 2, 550))
             pantalla_principal.blit(empezar_texto, empezar_rect)
 
     else:
@@ -373,6 +402,32 @@ while True:
                 titulo_juego = "¡Empate!"
             else:
                 titulo_juego = f"¡{'Blancas' if ganador == logica.JUGADOR_BLANCO else 'Negras'} ganaron!"
+            
+            # Mostrar estadísticas de tiempo de la IA
+            if cantidad_movimientos_ia > 0:
+                tiempo_promedio = tiempo_total_ia / cantidad_movimientos_ia
+                estadisticas_texto = f"IA realizó {cantidad_movimientos_ia} movimientos"
+                tiempo_texto = f"Tiempo promedio: {tiempo_promedio:.8f} segundos"
+                
+                estadisticas_render = fuente_pequena.render(estadisticas_texto, True, COLOR_BLANCO)
+                tiempo_render = fuente_pequena.render(tiempo_texto, True, COLOR_BLANCO)
+                
+                estadisticas_rect = estadisticas_render.get_rect(center=(VENTANA_ANCHO / 2, 70))
+                tiempo_rect = tiempo_render.get_rect(center=(VENTANA_ANCHO / 2, 100))
+                
+                pantalla_principal.blit(estadisticas_render, estadisticas_rect)
+                pantalla_principal.blit(tiempo_render, tiempo_rect)
+                
+                # Escribir resumen final en el archivo solo una vez
+                if not resumen_escrito:
+                    with open(nombre_archivo_log, "a", encoding="utf-8") as archivo:
+                        archivo.write(f"\n--- RESUMEN DE LA PARTIDA ---\n")
+                        archivo.write(f"Total de movimientos de IA: {cantidad_movimientos_ia}\n")
+                        archivo.write(f"Tiempo total: {tiempo_total_ia:.8f} segundos\n")
+                        archivo.write(f"Tiempo promedio: {tiempo_promedio:.8f} segundos\n")
+                        archivo.write(f"Ganador: {titulo_juego}\n")
+                        archivo.write(f"{'='*50}\n\n")
+                    resumen_escrito = True
         elif jugador_usuario == jugador_activo:
             titulo_juego = f"Tu turno: {'Blancas' if jugador_usuario == logica.JUGADOR_BLANCO else 'Negras'}"
         else:
@@ -381,7 +436,6 @@ while True:
             tituloRect = titulo_render.get_rect(center=(VENTANA_ANCHO / 2, 30))
             pantalla_principal.blit(titulo_render, tituloRect)
             pygame.display.flip()
-            time.sleep(0.1)
 
         if modo_busqueda_alfa_beta is not None and nivel_ia_seleccionado is not None:
             modo_texto = "Alfa-Beta" if modo_busqueda_alfa_beta else "Minimax"
@@ -405,20 +459,39 @@ while True:
 
         # Lógica para el movimiento de la IA
         if not ggwp and jugador_usuario != jugador_activo:
-            # Mostrar mensaje antes de sleep para que el usuario lo vea
+            # Mostrar mensaje antes de que la IA piense
             titulo_juego = "IA pensando..."
             titulo_render = fuente_grande.render(titulo_juego, True, COLOR_BLANCO)
             tituloRect = titulo_render.get_rect(center=(VENTANA_ANCHO / 2, 30))
             pantalla_principal.blit(titulo_render, tituloRect)
             pygame.display.flip()
             
-            # Usar tiempo de pensamiento según el nivel
-            time.sleep(0.7)
+            # Medir el tiempo que tarda la IA en pensar
+            tiempo_inicio = time.time()
             
             if modo_busqueda_alfa_beta:
                 movimiento_ia = logica.algoritmo_minimax_alfa_beta(estado_tablero, jugador_activo)
             else:
                 movimiento_ia = logica.algoritmo_minimax(estado_tablero, jugador_activo)
+            
+            tiempo_fin = time.time()
+            tiempo_movimiento = tiempo_fin - tiempo_inicio
+            
+            # Registrar el tiempo en las variables y en el archivo
+            tiempo_total_ia += tiempo_movimiento
+            cantidad_movimientos_ia += 1
+            tiempos_ia.append(tiempo_movimiento)
+            
+            # Escribir el tiempo en el archivo logtime.txt
+            with open(nombre_archivo_log, "a", encoding="utf-8") as archivo:
+                if cantidad_movimientos_ia == 1:
+                    # Escribir información de la configuración en el primer movimiento
+                    algoritmo_texto = "Alfa-Beta" if modo_busqueda_alfa_beta else "Minimax"
+                    color_ia = "Negras" if jugador_usuario == logica.JUGADOR_BLANCO else "Blancas"
+                    archivo.write(f"Configuración: {algoritmo_texto} | Nivel {nivel_ia_seleccionado} | IA juega con {color_ia}\n")
+                    archivo.write("-" * 50 + "\n")
+                
+                archivo.write(f"Movimiento {cantidad_movimientos_ia}: {tiempo_movimiento:.8f} segundos\n")
 
             if movimiento_ia:
                 # Actualizar el resaltado del último movimiento para la IA
