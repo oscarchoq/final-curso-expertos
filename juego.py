@@ -114,20 +114,30 @@ while True:
 
             # Lógica de selección de jugador y modo al inicio
             if jugador_usuario is None or modo_busqueda_alfa_beta is None or nivel_ia_seleccionado is None:
+                # Dimensiones consistentes con el dibujo
+                boton_ancho = 150
+                boton_alto = 45
+                separacion = 60
+                
                 # Botones de elección de jugador
-                boton_blanco = pygame.Rect((VENTANA_ANCHO / 8), (VENTANA_ALTO / 2 - 120), VENTANA_ANCHO / 4, 40)
-                boton_negro = pygame.Rect(5 * (VENTANA_ANCHO / 8), (VENTANA_ALTO / 2 - 120), VENTANA_ANCHO / 4, 40)
+                boton_blanco = pygame.Rect((VENTANA_ANCHO / 2 - boton_ancho - separacion/2), 210, boton_ancho, boton_alto)
+                boton_negro = pygame.Rect((VENTANA_ANCHO / 2 + separacion/2), 210, boton_ancho, boton_alto)
                 
                 # Botones de elección de modo IA
-                boton_alfa_beta = pygame.Rect((VENTANA_ANCHO / 8), (VENTANA_ALTO / 2 - 70), VENTANA_ANCHO / 3, 35)
-                boton_minimax = pygame.Rect((VENTANA_ANCHO / 2 + 20), (VENTANA_ALTO / 2 - 70), VENTANA_ANCHO / 3, 35)
+                boton_alfa_beta = pygame.Rect((VENTANA_ANCHO / 2 - boton_ancho - separacion/2), 330, boton_ancho, boton_alto)
+                boton_minimax = pygame.Rect((VENTANA_ANCHO / 2 + separacion/2), 330, boton_ancho, boton_alto)
                 
                 # Botones de niveles de dificultad
                 botones_nivel = []
+                botones_por_fila = 5
+                boton_nivel_tamano = 60
+                espacio_entre_botones = 20
+                inicio_x = VENTANA_ANCHO / 2 - (botones_por_fila * boton_nivel_tamano + (botones_por_fila - 1) * espacio_entre_botones) / 2
+                
                 for i in range(1, 6):
-                    x = (VENTANA_ANCHO / 6) + (i - 1) * (VENTANA_ANCHO / 6)
-                    y = VENTANA_ALTO / 2 - 20
-                    botones_nivel.append(pygame.Rect(x - 25, y, 50, 30))
+                    x = inicio_x + (i - 1) * (boton_nivel_tamano + espacio_entre_botones)
+                    y = 450
+                    botones_nivel.append(pygame.Rect(x, y, boton_nivel_tamano, boton_nivel_tamano))
 
                 if boton_blanco.collidepoint(posicion_mouse):
                     time.sleep(0.2)
@@ -146,7 +156,6 @@ while True:
                     for i, boton in enumerate(botones_nivel):
                         if boton.collidepoint(posicion_mouse):
                             nivel_ia_seleccionado = i + 1
-                            logica.establecer_nivel_ia(i + 1)
                             break
 
             # Lógica para reiniciar el juego
@@ -230,87 +239,92 @@ while True:
 
     # --- Pantalla de Inicio (Selección de Jugador y Modo) ---
     if jugador_usuario is None or modo_busqueda_alfa_beta is None or nivel_ia_seleccionado is None:
+        # Título principal
         titulo_juego = fuente_grande.render("Damas IA", True, COLOR_AZUL_OSCURO)
-        tituloRect = titulo_juego.get_rect(center=(VENTANA_ANCHO / 2, 50))
+        tituloRect = titulo_juego.get_rect(center=(VENTANA_ANCHO / 2, 80))
         pantalla_principal.blit(titulo_juego, tituloRect)
 
         sub_titulo = fuente_pequena.render(f"Tablero {logica.TABLERO_DIM}x{logica.TABLERO_DIM}", True, COLOR_BLANCO)
-        sub_titulo_rect = sub_titulo.get_rect(center=(VENTANA_ANCHO / 2, 90))
+        sub_titulo_rect = sub_titulo.get_rect(center=(VENTANA_ANCHO / 2, 120))
         pantalla_principal.blit(sub_titulo, sub_titulo_rect)
 
-        # Sección de color del jugador
-        seccion_jugador = fuente_pequena.render("Selecciona tu color:", True, COLOR_BLANCO)
-        seccion_jugador_rect = seccion_jugador.get_rect(center=(VENTANA_ANCHO / 2, VENTANA_ALTO / 2 - 150))
+        # Sección 1: Selección de color del jugador
+        seccion_jugador = fuente_pequena.render("1. Selecciona tu color:", True, COLOR_BLANCO)
+        seccion_jugador_rect = seccion_jugador.get_rect(center=(VENTANA_ANCHO / 2, 180))
         pantalla_principal.blit(seccion_jugador, seccion_jugador_rect)
 
-        boton_blanco = pygame.Rect((VENTANA_ANCHO / 8), (VENTANA_ALTO / 2 - 120), VENTANA_ANCHO / 4, 40)
+        # Botones de color centrados y mejor espaciados
+        boton_ancho = 150
+        boton_alto = 45
+        separacion = 60
+        
+        boton_blanco = pygame.Rect((VENTANA_ANCHO / 2 - boton_ancho - separacion/2), 210, boton_ancho, boton_alto)
         texto_blanco = fuente_pequena.render("Blancas", True, COLOR_NEGRO)
         texto_blancoRect = texto_blanco.get_rect(center=boton_blanco.center)
         color_boton = COLOR_VERDE if jugador_usuario == logica.JUGADOR_BLANCO else COLOR_GRIS_CLARO
         pygame.draw.rect(pantalla_principal, color_boton, boton_blanco)
+        pygame.draw.rect(pantalla_principal, COLOR_NEGRO, boton_blanco, 2)
         pantalla_principal.blit(texto_blanco, texto_blancoRect)
 
-        boton_negro = pygame.Rect(5 * (VENTANA_ANCHO / 8), (VENTANA_ALTO / 2 - 120), VENTANA_ANCHO / 4, 40)
+        boton_negro = pygame.Rect((VENTANA_ANCHO / 2 + separacion/2), 210, boton_ancho, boton_alto)
         texto_negro = fuente_pequena.render("Negras", True, COLOR_NEGRO)
         texto_negroRect = texto_negro.get_rect(center=boton_negro.center)
         color_boton = COLOR_VERDE if jugador_usuario == logica.JUGADOR_NEGRO else COLOR_GRIS_CLARO
         pygame.draw.rect(pantalla_principal, color_boton, boton_negro)
+        pygame.draw.rect(pantalla_principal, COLOR_NEGRO, boton_negro, 2)
         pantalla_principal.blit(texto_negro, texto_negroRect)
 
-        # Sección de algoritmo
-        seccion_algoritmo = fuente_pequena.render("Algoritmo de IA:", True, COLOR_BLANCO)
-        seccion_algoritmo_rect = seccion_algoritmo.get_rect(center=(VENTANA_ANCHO / 2, VENTANA_ALTO / 2 - 100))
+        # Sección 2: Algoritmo de IA
+        seccion_algoritmo = fuente_pequena.render("2. Selecciona el algoritmo:", True, COLOR_BLANCO)
+        seccion_algoritmo_rect = seccion_algoritmo.get_rect(center=(VENTANA_ANCHO / 2, 300))
         pantalla_principal.blit(seccion_algoritmo, seccion_algoritmo_rect)
 
-        boton_alfa_beta = pygame.Rect((VENTANA_ANCHO / 8), (VENTANA_ALTO / 2 - 70), VENTANA_ANCHO / 3, 35)
+        boton_alfa_beta = pygame.Rect((VENTANA_ANCHO / 2 - boton_ancho - separacion/2), 330, boton_ancho, boton_alto)
         texto_alfa_beta = fuente_pequena.render("Alfa-Beta", True, COLOR_NEGRO)
         texto_alfa_betaRect = texto_alfa_beta.get_rect(center=boton_alfa_beta.center)
         color_boton = COLOR_VERDE if modo_busqueda_alfa_beta == True else COLOR_GRIS_CLARO
         pygame.draw.rect(pantalla_principal, color_boton, boton_alfa_beta)
+        pygame.draw.rect(pantalla_principal, COLOR_NEGRO, boton_alfa_beta, 2)
         pantalla_principal.blit(texto_alfa_beta, texto_alfa_betaRect)
 
-        boton_minimax = pygame.Rect((VENTANA_ANCHO / 2 + 20), (VENTANA_ALTO / 2 - 70), VENTANA_ANCHO / 3, 35)
+        boton_minimax = pygame.Rect((VENTANA_ANCHO / 2 + separacion/2), 330, boton_ancho, boton_alto)
         texto_minimax = fuente_pequena.render("Minimax", True, COLOR_NEGRO)
         texto_minimaxRect = texto_minimax.get_rect(center=boton_minimax.center)
         color_boton = COLOR_VERDE if modo_busqueda_alfa_beta == False else COLOR_GRIS_CLARO
         pygame.draw.rect(pantalla_principal, color_boton, boton_minimax)
+        pygame.draw.rect(pantalla_principal, COLOR_NEGRO, boton_minimax, 2)
         pantalla_principal.blit(texto_minimax, texto_minimaxRect)
 
-        # Sección de nivel de dificultad
-        seccion_nivel = fuente_pequena.render("Nivel de dificultad:", True, COLOR_BLANCO)
-        seccion_nivel_rect = seccion_nivel.get_rect(center=(VENTANA_ANCHO / 2, VENTANA_ALTO / 2 - 50))
+        # Sección 3: Nivel de dificultad
+        seccion_nivel = fuente_pequena.render("3. Selecciona la dificultad:", True, COLOR_BLANCO)
+        seccion_nivel_rect = seccion_nivel.get_rect(center=(VENTANA_ANCHO / 2, 420))
         pantalla_principal.blit(seccion_nivel, seccion_nivel_rect)
 
         # Botones de niveles
+        botones_por_fila = 5
+        boton_nivel_tamano = 60
+        espacio_entre_botones = 20
+        inicio_x = VENTANA_ANCHO / 2 - (botones_por_fila * boton_nivel_tamano + (botones_por_fila - 1) * espacio_entre_botones) / 2
+        
         for i in range(1, 6):
-            x = (VENTANA_ANCHO / 6) + (i - 1) * (VENTANA_ANCHO / 6)
-            y = VENTANA_ALTO / 2 - 20
-            boton_nivel = pygame.Rect(x - 25, y, 50, 30)
+            x = inicio_x + (i - 1) * (boton_nivel_tamano + espacio_entre_botones)
+            y = 450
+            boton_nivel = pygame.Rect(x, y, boton_nivel_tamano, boton_nivel_tamano)
             
             color_boton = COLOR_VERDE if nivel_ia_seleccionado == i else COLOR_GRIS_CLARO
             pygame.draw.rect(pantalla_principal, color_boton, boton_nivel)
+            pygame.draw.rect(pantalla_principal, COLOR_NEGRO, boton_nivel, 2)
             
             texto_nivel = fuente_pequena.render(str(i), True, COLOR_NEGRO)
             texto_nivel_rect = texto_nivel.get_rect(center=boton_nivel.center)
             pantalla_principal.blit(texto_nivel, texto_nivel_rect)
 
-        # Mostrar información del nivel seleccionado
-        if nivel_ia_seleccionado is not None:
-            info_nivel = logica.NIVELES_DIFICULTAD[nivel_ia_seleccionado]
-            texto_info = f"Nivel {nivel_ia_seleccionado}: {info_nivel['nombre']}"
-            info_texto = fuente_pequena.render(texto_info, True, COLOR_BLANCO)
-            info_rect = info_texto.get_rect(center=(VENTANA_ANCHO / 2, VENTANA_ALTO / 2 + 20))
-            pantalla_principal.blit(info_texto, info_rect)
-            
-            descripcion_texto = info_nivel['descripcion']
-            desc_render = fuente_pequena.render(descripcion_texto, True, COLOR_BLANCO)
-            desc_rect = desc_render.get_rect(center=(VENTANA_ANCHO / 2, VENTANA_ALTO / 2 + 50))
-            pantalla_principal.blit(desc_render, desc_rect)
+
 
         # Verificar si todo está seleccionado
         if jugador_usuario is not None and modo_busqueda_alfa_beta is not None and nivel_ia_seleccionado is not None:
             empezar_texto = fuente_grande.render("¡LISTO PARA JUGAR!", True, COLOR_VERDE)
-            empezar_rect = empezar_texto.get_rect(center=(VENTANA_ANCHO / 2, VENTANA_ALTO - 100))
+            empezar_rect = empezar_texto.get_rect(center=(VENTANA_ANCHO / 2, 590))
             pantalla_principal.blit(empezar_texto, empezar_rect)
 
     else:
@@ -370,9 +384,8 @@ while True:
             time.sleep(0.1)
 
         if modo_busqueda_alfa_beta is not None and nivel_ia_seleccionado is not None:
-            info_nivel = logica.obtener_nivel_actual()
             modo_texto = "Alfa-Beta" if modo_busqueda_alfa_beta else "Minimax"
-            info_completa = f"IA: {modo_texto} | Nivel {nivel_ia_seleccionado}: {info_nivel['nombre']}"
+            info_completa = f"IA: {modo_texto} | Nivel {nivel_ia_seleccionado}"
             modo_info_texto = fuente_pequena.render(info_completa, True, COLOR_BLANCO)
             modo_info_rect = modo_info_texto.get_rect(center=(VENTANA_ANCHO / 2, VENTANA_ALTO - 40))
             pantalla_principal.blit(modo_info_texto, modo_info_rect)
@@ -400,8 +413,7 @@ while True:
             pygame.display.flip()
             
             # Usar tiempo de pensamiento según el nivel
-            tiempo_pensamiento = logica.obtener_tiempo_pensamiento()
-            time.sleep(tiempo_pensamiento)
+            time.sleep(0.7)
             
             if modo_busqueda_alfa_beta:
                 movimiento_ia = logica.algoritmo_minimax_alfa_beta(estado_tablero, jugador_activo)
