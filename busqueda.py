@@ -20,35 +20,30 @@ NIVELES_DIFICULTAD = {
         "nombre": "Principiante",
         "profundidad": 1,
         "error_probabilidad": 0.3,  # 30% de probabilidad de hacer un movimiento subóptimo
-        "tiempo_pensamiento": 0.5,
         "descripcion": "IA muy básica, comete errores frecuentes"
     },
     2: {
         "nombre": "Fácil", 
         "profundidad": 2,
         "error_probabilidad": 0.2,  # 20% de probabilidad de error
-        "tiempo_pensamiento": 1.0,
         "descripcion": "IA básica, algunos errores ocasionales"
     },
     3: {
         "nombre": "Intermedio",
         "profundidad": 3,
         "error_probabilidad": 0.1,  # 10% de probabilidad de error
-        "tiempo_pensamiento": 1.5,
         "descripcion": "IA competente, pocos errores"
     },
     4: {
         "nombre": "Difícil",
         "profundidad": 4,
         "error_probabilidad": 0.05,  # 5% de probabilidad de error
-        "tiempo_pensamiento": 2.0,
         "descripcion": "IA avanzada, muy pocos errores"
     },
     5: {
         "nombre": "Experto",
         "profundidad": 5,
         "error_probabilidad": 0.0,  # Sin errores intencionales
-        "tiempo_pensamiento": 2.5,
         "descripcion": "IA máxima, juego perfecto"
     }
 }
@@ -71,12 +66,6 @@ def obtener_nivel_actual():
     Retorna la información del nivel actual de la IA.
     """
     return NIVELES_DIFICULTAD[nivel_ia_actual]
-
-def obtener_tiempo_pensamiento():
-    """
-    Retorna el tiempo que debe esperar la IA antes de hacer su movimiento.
-    """
-    return NIVELES_DIFICULTAD[nivel_ia_actual]["tiempo_pensamiento"]
 
 def debe_cometer_error():
     """
