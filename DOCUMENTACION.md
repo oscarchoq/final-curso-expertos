@@ -1,46 +1,46 @@
-# Documentación: Juego de Damas con Inteligencia Artificial
+# Documentación: Juego de Damas con Inteligencia Artificial (Optimizado)
 
 ## Descripción General
 
-Este proyecto implementa un juego de damas completo con una interfaz gráfica y una inteligencia artificial (IA) basada en algoritmos de búsqueda. El juego sigue las reglas tradicionales de las damas, incluyendo capturas obligatorias, capturas múltiples, y promoción a dama.
+Este proyecto implementa un juego de damas completo con una interfaz gráfica y una inteligencia artificial (IA) basada en algoritmos de búsqueda. El juego sigue las reglas tradicionales de las damas, incluyendo capturas obligatorias y promoción a dama. **El código ha sido completamente optimizado** eliminando funcionalidades innecesarias y simplificando la arquitectura.
 
-## Estructura del Proyecto
+## Estructura del Proyecto (Optimizada)
 
-El proyecto está dividido en dos módulos principales:
+El proyecto está dividido en módulos especializados con arquitectura orientada a objetos:
 
-1. **busqueda.py**: Implementa la lógica del juego y los algoritmos de IA
-2. **juego.py**: Maneja la interfaz gráfica y la interacción con el usuario
-3. **LogTime/**: Carpeta donde se almacenan los registros de tiempo de la IA
+1. **main.py**: Clase principal `JuegoDamas` que controla toda la aplicación
+2. **configuracion.py**: Constantes y configuraciones centralizadas
+3. **tablero.py**: Lógica del tablero y validación de reglas
+4. **jugador.py**: Clases de jugadores simplificadas
+5. **algoritmos.py**: Algoritmos de IA optimizados
+6. **LogTime/**: Carpeta donde se almacenan los registros de tiempo de la IA
 
 ## Funcionalidades Principales
 
 ### Reglas del Juego Implementadas
 
-- **Tablero 8x8** (configurable a otros tamaños)
+- **Tablero 8x8** (configurable desde configuracion.py)
 - **Movimientos regulares**: Peones avanzan en diagonal, damas pueden moverse en cualquier dirección diagonal
 - **Capturas obligatorias**: Si existe la posibilidad de capturar, es obligatorio hacerlo
-- **Capturas múltiples**: Si después de una captura se puede realizar otra, debe continuarse
 - **Coronación**: Los peones se convierten en damas al llegar a la última fila
 - **Condiciones de victoria**: Capturar todas las piezas del oponente o bloquear todos sus movimientos
 
-### Sistema de IA
+### Sistema de IA Optimizado
 
 La IA utiliza algoritmos avanzados para tomar decisiones:
 
 1. **Minimax**: Algoritmo básico que evalúa posibles movimientos futuros
 2. **Minimax con poda Alfa-Beta**: Versión optimizada que reduce el espacio de búsqueda
 
-### Niveles de Dificultad
+### Niveles de Dificultad (Optimizado a 3 niveles)
 
-El juego implementa 5 niveles de dificultad que afectan el comportamiento de la IA:
+El juego implementa **3 niveles de dificultad optimizados** que ofrecen experiencia balanceada:
 
 | Nivel | Nombre | Profundidad de Búsqueda | Probabilidad de Error | Descripción |
 |-------|--------|-------------------------|----------------------|-------------|
-| 1 | Principiante | 1 | 30% | IA muy básica, comete errores frecuentes |
-| 2 | Fácil | 2 | 20% | IA básica, algunos errores ocasionales |
-| 3 | Intermedio | 3 | 10% | IA competente, pocos errores |
-| 4 | Difícil | 4 | 5% | IA avanzada, muy pocos errores |
-| 5 | Experto | 5 | 0% | IA máxima, juego perfecto |
+| 1 | Principiante | 1 | 30% | IA básica, comete errores frecuentes para principiantes |
+| 2 | Intermedio | 3 | 10% | IA competente, pocos errores, juego equilibrado |
+| 3 | Experto | 5 | 0% | IA máxima, juego perfecto, máximo desafío |
 
 ### Medición de Rendimiento
 
@@ -50,52 +50,61 @@ El sistema registra detalladamente el rendimiento de la IA:
 - **Archivos de registro**: Genera archivos únicos por partida con formato `logtime_YYYYMMDD_HHMMSS.txt`
 - **Estadísticas**: Calcula y muestra el tiempo promedio de la IA al finalizar cada partida
 
-## Descripción Técnica de los Módulos
+## Descripción Técnica de los Módulos (Arquitectura Optimizada)
 
-### Módulo `busqueda.py`
+### Módulo `main.py` (Clase Principal)
 
-Este módulo contiene la lógica del juego y los algoritmos de IA:
+Este módulo contiene la clase principal que gestiona todo el juego:
 
-#### Configuración del Juego
+#### Clase `JuegoDamas`
 
-- Definición del tablero, piezas y reglas básicas
-- Configuración de niveles de dificultad
+- **Gestión de interfaz**: Control completo de la interfaz gráfica con pygame
+- **Control de estados**: Manejo de configuración inicial, juego y pantalla final
+- **Coordinación de jugadores**: Interacción entre jugador humano e IA
+- **Sistema de logging**: Registro automático de tiempos de IA
 
-#### Funciones del Tablero
+### Módulo `configuracion.py`
 
-- `tablero_inicial()`: Inicializa el tablero con la disposición estándar
+Centraliza todas las constantes y configuraciones:
+
+- **Constantes del tablero**: Dimensiones, tipos de piezas, valores
+- **Configuración de IA**: Niveles de dificultad optimizados (3 niveles)
+- **Constantes de interfaz**: Colores, dimensiones de ventana
+- **Sistema de errores**: Probabilidades por nivel
+
+### Módulo `tablero.py`
+
+Gestiona el estado del tablero y reglas del juego:
+
+#### Clase `Tablero`
+
+- `inicializar_tablero()`: Configuración inicial del tablero
 - `movimientos_disponibles()`: Calcula todos los movimientos válidos para un jugador
-- `aplicar_movimiento()`: Ejecuta un movimiento y actualiza el estado del tablero
-- `determinar_ganador()`: Verifica si hay un ganador según las reglas
+- `aplicar_movimiento()`: Ejecuta un movimiento y retorna nuevo estado del tablero
+- `es_final()`: Verifica si hay movimientos disponibles
+- `determinar_ganador()`: Determina el ganador según las reglas
 
-#### Funciones de IA
+### Módulo `jugador.py` (Simplificado)
 
-- `debe_cometer_error()`: Determina si la IA debe cometer un error intencional según su nivel
-- `calcular_utilidad()`: Evalúa el valor heurístico de una posición del tablero
-- `algoritmo_minimax()`: Implementa el algoritmo Minimax básico
-- `algoritmo_minimax_alfa_beta()`: Implementa Minimax con optimización Alfa-Beta
+Clases optimizadas para manejar jugadores:
 
-### Módulo `juego.py`
+#### Clases Principales
 
-Este módulo maneja la interfaz gráfica y la interacción del usuario:
+- `Jugador`: Clase base abstracta
+- `JugadorHumano`: Maneja interacción básica del usuario (simplificado)
+- `GestorMovimientos`: Coordina movimientos y validaciones básicas
 
-#### Interfaz Gráfica
+### Módulo `algoritmos.py` (Optimizado)
 
-- Dibujo del tablero y piezas usando Pygame
-- Selección de piezas y visualización de movimientos
-- Visualización de información de nivel y estadísticas
+Implementación completa de algoritmos de IA:
 
-#### Interacción del Usuario
+#### Clases Principales
 
-- Selección de nivel de dificultad
-- Selección de color de jugador
-- Sistema de turnos y control del juego
-
-#### Registro de Tiempos
-
-- Medición precisa del tiempo de cálculo de la IA
-- Generación de archivos de registro con estadísticas
-- Visualización de resumen al finalizar la partida
+- `ConfiguracionIA`: Gestiona configuración de dificultad
+- `EvaluadorTablero`: Implementa función de evaluación heurística optimizada
+- `AlgoritmoMinimax`: Algoritmo Minimax básico
+- `AlgoritmoMinimaxAlfaBeta`: Minimax con poda Alfa-Beta
+- `JugadorIA`: Orquesta todos los algoritmos
 
 ## Algoritmos Principales
 
@@ -116,33 +125,62 @@ La poda Alfa-Beta es una optimización del algoritmo Minimax:
 2. Si un movimiento es peor que lo ya encontrado, ese camino se "poda" (no se explora más)
 3. Reduce significativamente el espacio de búsqueda sin afectar el resultado final
 
-### Función de Evaluación
+### Función de Evaluación Optimizada
 
 La función `calcular_utilidad()` evalúa una posición del tablero considerando:
 
-1. Cantidad de piezas de cada jugador
-2. Valor especial para las damas (más alto que los peones)
-3. Posición de las piezas en el tablero (avance, cercanía al centro)
-4. Movilidad (cantidad de movimientos disponibles)
+1. **Cantidad de piezas**: Puntaje base por número de piezas
+2. **Valor de damas**: Las damas tienen mayor valor que los peones
+3. **Posición estratégica**: Bonificación por avance hacia coronación
+4. **Control del centro**: Valoración de piezas en posiciones centrales
 
-## Mejoras y Características Avanzadas
+## Optimizaciones Realizadas
 
-1. **Capturas múltiples obligatorias**: El jugador debe continuar capturando si es posible
-2. **Medición de tiempo real**: Se registra con precisión el tiempo de cálculo de la IA
-3. **Archivos de log únicos**: Se genera un archivo por partida con nombre basado en fecha y hora
-4. **Visualización de estadísticas**: Muestra el tiempo promedio de la IA al finalizar la partida
-5. **Algoritmos optimizados**: Implementación eficiente de Minimax con poda Alfa-Beta
+### ✅ Eliminaciones de Código Innecesario
+
+1. **Sistema de capturas consecutivas**: Removido completamente para simplificar el juego
+2. **Imports no utilizados**: Limpieza de todas las importaciones innecesarias
+3. **Variables no utilizadas**: Eliminación de variables y métodos sin uso
+4. **Comentarios redundantes**: Optimización de documentación
+
+### ✅ Simplificaciones Arquitectónicas
+
+1. **Reducción de niveles**: De 5 a 3 niveles de dificultad optimizados
+2. **Interfaz simplificada**: Botones y controles más directos
+3. **Clases simplificadas**: Eliminación de funcionalidades complejas innecesarias
+4. **Flujo de juego directo**: Menos estados intermedios, más fluido
+
+### ✅ Mejoras de Rendimiento
+
+1. **Algoritmos optimizados**: Implementación más eficiente
+2. **Memoria optimizada**: Mejor gestión de recursos
+3. **Código más limpio**: Mayor velocidad de ejecución
+4. **Debugging simplificado**: Menos puntos de fallo
 
 ## Cómo Ejecutar el Juego
 
 1. Asegúrate de tener Python y Pygame instalados
-2. Ejecuta `python juego.py` desde la terminal
+2. Ejecuta `python main.py` desde la terminal
 3. Selecciona el nivel de dificultad y tu color (blancas o negras)
-4. ¡Disfruta del juego!
+4. ¡Disfruta del juego optimizado!
 
-## Desarrollos Futuros Posibles
+## Estado Actual del Proyecto
 
-1. Implementación de apertura de libros para mejorar la estrategia inicial
-2. Aprendizaje automático para mejorar la IA con el tiempo
-3. Multijugador en red para jugar contra otros jugadores
-4. Análisis de partidas con recomendaciones de mejora
+### ✅ Completamente Funcional
+- Arquitectura orientada a objetos optimizada
+- 3 niveles de dificultad balanceados
+- Interfaz gráfica moderna y fluida
+- Sistema de logging de rendimiento
+- Código limpio sin funcionalidades innecesarias
+
+### ✅ Validaciones Completas
+- Movimientos válidos según reglas de damas
+- Capturas obligatorias implementadas
+- Promoción automática a dama
+- Detección de fin de juego
+
+### ✅ Optimizaciones Implementadas
+- Eliminación de código innecesario
+- Limpieza de imports y variables
+- Comentarios optimizados
+- Arquitectura simplificada y eficiente

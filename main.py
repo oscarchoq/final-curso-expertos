@@ -1,8 +1,3 @@
-# juego_main.py
-"""
-Juego de Damas con IA - Arquitectura Orientada a Objetos Completa
-Versión refactorizada sin archivos de compatibilidad
-"""
 import pygame
 import sys
 import time
@@ -12,18 +7,13 @@ from typing import Optional, Tuple, Set
 # Importar las clases del juego
 from configuracion import *
 from tablero import Tablero
-from jugador import JugadorHumano, ControladorCapturaMultiple, GestorMovimientos
+from jugador import JugadorHumano, GestorMovimientos
 from algoritmos import JugadorIA
 
 
 class JuegoDamas:
-    """
-    Clase principal que gestiona todo el juego de damas.
-    Controla la interfaz gráfica, la lógica del juego y la interacción usuario-IA.
-    """
     
     def __init__(self):
-        """Inicializa el juego y configura Pygame."""
         pygame.init()
         
         # Configuración de ventana
@@ -42,7 +32,6 @@ class JuegoDamas:
         self.COLOR_VERDE = (0, 255, 0)
         self.COLOR_CASILLA_CLARA = (240, 217, 181)
         self.COLOR_CASILLA_OSCURA = (181, 136, 99)
-        self.COLOR_RESALTADO_ULTIMO_MOVIMIENTO = (255, 215, 0)
         self.COLOR_RESALTADO_ORIGEN = (255, 165, 0)
         self.COLOR_RESALTADO_DESTINO = (255, 215, 0)
         
@@ -60,23 +49,19 @@ class JuegoDamas:
         self._configurar_logging()
     
     def _cargar_fuentes(self):
-        """Carga las fuentes del juego."""
         try:
             self.fuente_pequena = pygame.font.Font("OpenSans-Regular.ttf", 28)
             self.fuente_grande = pygame.font.Font("OpenSans-Regular.ttf", 40)
-            self.fuente_movimiento = pygame.font.Font("OpenSans-Regular.ttf", int(self.CELDA_TAMANO * 0.6))
         except (FileNotFoundError, pygame.error) as e:
             print(f"Advertencia: No se encontró 'OpenSans-Regular.ttf' ({e}). Usando fuente por defecto.")
             self.fuente_pequena = pygame.font.Font(None, 28)
             self.fuente_grande = pygame.font.Font(None, 40)
-            self.fuente_movimiento = pygame.font.Font(None, int(self.CELDA_TAMANO * 0.6))
     
     def _inicializar_estado(self):
         """Inicializa el estado del juego."""
         # Componentes principales del juego
         self.tablero = Tablero()
         self.gestor_movimientos = GestorMovimientos()
-        self.controlador_captura = ControladorCapturaMultiple()
         
         # Jugadores
         self.jugador_humano: Optional[JugadorHumano] = None
@@ -120,11 +105,6 @@ class JuegoDamas:
     def configurar_jugadores(self, color_usuario: str, usar_alfa_beta: bool, nivel: int):
         """
         Configura los jugadores una vez seleccionados los parámetros.
-        
-        Args:
-            color_usuario: Color del jugador humano (JUGADOR_BLANCO o JUGADOR_NEGRO)
-            usar_alfa_beta: True para usar poda Alfa-Beta, False para Minimax básico
-            nivel: Nivel de dificultad de la IA (1-5)
         """
         self.jugador_usuario = color_usuario
         self.jugador_activo = JUGADOR_BLANCO  # Siempre empiezan las blancas
@@ -132,7 +112,7 @@ class JuegoDamas:
         self.nivel_ia_seleccionado = nivel
         
         # Crear jugador humano
-        self.jugador_humano = JugadorHumano(color_usuario, self.gestor_movimientos, self.controlador_captura)
+        self.jugador_humano = JugadorHumano(color_usuario)
         
         # Crear jugador IA (color opuesto al humano)
         color_ia = JUGADOR_NEGRO if color_usuario == JUGADOR_BLANCO else JUGADOR_BLANCO
