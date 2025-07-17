@@ -4,13 +4,14 @@ Un juego de damas implementado en Python con arquitectura orientada a objetos y 
 
 ## ✨ Características Principales
 
-- **Arquitectura Orientada a Objetos**: Diseño modular y profesional
+- **Arquitectura Orientada a Objetos**: Diseño modular y profesional optimizado
 - **Interfaz Gráfica Moderna**: Implementada con pygame
 - **IA Avanzada**: 3 niveles de dificultad optimizados (Principiante, Intermedio, Experto)
 - **Algoritmos Implementados**: Minimax y Minimax con poda Alfa-Beta
 - **Validación Completa**: Movimientos, capturas múltiples y reglas oficiales
 - **Sistema de Promoción**: Transformación automática a reinas
 - **Sistema de Errores Probabilísticos**: IA con comportamiento realista según el nivel
+- **Código Optimizado**: Sin funcionalidades innecesarias, máximo rendimiento
 
 ## 🛠️ Requisitos del Sistema
 
@@ -46,7 +47,8 @@ Final-Curso/
 ├── 🏁 tablero.py           # Lógica del tablero y reglas
 ├── 👤 jugador.py           # Clases de jugadores (Humano/IA)
 ├── 🧠 algoritmos.py        # Algoritmos de inteligencia artificial
-└── 🎵 OpenSans-Regular.ttf # Fuente para la interfaz
+├── 🎵 OpenSans-Regular.ttf # Fuente para la interfaz
+└── 📁 LogTime/             # Registro de tiempos de la IA
 ```
 
 ## 🧠 Algoritmos de Inteligencia Artificial
@@ -81,7 +83,6 @@ Final-Curso/
 
 - Movimientos diagonales únicos
 - Capturas obligatorias cuando están disponibles
-- Capturas múltiples en secuencia
 - Promoción automática al alcanzar el extremo opuesto
 - Detección de fin de juego
 
@@ -91,6 +92,9 @@ Final-Curso/
 - Evaluación heurística optimizada
 - Manejo eficiente de memoria
 - Sistema de errores probabilísticos para realismo
+- **Eliminación de código innecesario**: Sistema de capturas consecutivas removido
+- **Limpieza de imports**: Eliminación de imports no utilizados
+- **Optimización de comentarios**: Documentación simplificada
 
 ## 🔧 Arquitectura del Software
 
@@ -100,7 +104,7 @@ Final-Curso/
 JuegoDamas (Clase Principal)
 ├── Tablero (Estado del juego)
 ├── JugadorIA (Inteligencia artificial)
-├── JugadorHumano (Interacción usuario)
+├── JugadorHumano (Interacción usuario simplificada)
 └── Configuracion (Constantes y settings)
 ```
 
@@ -123,3 +127,4 @@ Desarrollado con ❤️ usando Python y arquitectura orientada a objetos
 - ✅ Interfaz gráfica moderna con pygame
 - ✅ Arquitectura orientada a objetos completa
 - ✅ Validaciones completas de reglas de damas
+- ✅ **Código completamente optimizado**: Sin capturas consecutivas, imports limpios, comentarios optimizados

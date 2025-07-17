@@ -17,22 +17,18 @@ class ConfiguracionIA:
         self.nivel_actual = nivel
     
     def establecer_nivel(self, nivel):
-        """Establece el nivel de dificultad de la IA."""
         if nivel in NIVELES_DIFICULTAD:
             self.nivel_actual = nivel
             return True
         return False
     
     def obtener_nivel_actual(self):
-        """Retorna la información del nivel actual."""
         return NIVELES_DIFICULTAD[self.nivel_actual]
     
     def obtener_profundidad(self):
-        """Retorna la profundidad de búsqueda para el nivel actual."""
         return NIVELES_DIFICULTAD[self.nivel_actual]["profundidad"]
     
     def debe_cometer_error(self):
-        """Determina si la IA debe cometer un error intencional."""
         probabilidad_error = NIVELES_DIFICULTAD[self.nivel_actual]["error_probabilidad"]
         return random.random() < probabilidad_error
 
@@ -55,34 +51,28 @@ class EvaluadorTablero:
         score_blanco = 0
         score_negro = 0
         
-        # Evaluar piezas y posiciones
         for fila in range(TABLERO_DIM):
             for columna in range(TABLERO_DIM):
                 pieza = tablero.obtener_pieza(fila, columna)
                 
                 if pieza == JUGADOR_BLANCO:
                     score_blanco += VALOR_PEON
-                    # Bonificación por avance (cercanía a coronarse)
                     score_blanco += (TABLERO_DIM - 1 - fila) * VALOR_AVANCE
                     
                 elif pieza == DAMA_BLANCA:
                     score_blanco += VALOR_DAMA
-                    # Bonificación por posición central (más movilidad)
                     centro_dist = abs(fila - TABLERO_DIM//2) + abs(columna - TABLERO_DIM//2)
                     score_blanco += (TABLERO_DIM - centro_dist) * VALOR_CENTRO
                     
                 elif pieza == JUGADOR_NEGRO:
                     score_negro += VALOR_PEON
-                    # Bonificación por avance
                     score_negro += fila * VALOR_AVANCE
                     
                 elif pieza == DAMA_NEGRA:
                     score_negro += VALOR_DAMA
-                    # Bonificación por posición central
                     centro_dist = abs(fila - TABLERO_DIM//2) + abs(columna - TABLERO_DIM//2)
                     score_negro += (TABLERO_DIM - centro_dist) * VALOR_CENTRO
         
-        # Evaluar movilidad (cantidad de movimientos disponibles)
         try:
             movimientos_blanco = len(tablero.movimientos_disponibles(JUGADOR_BLANCO))
             movimientos_negro = len(tablero.movimientos_disponibles(JUGADOR_NEGRO))
@@ -90,7 +80,6 @@ class EvaluadorTablero:
             score_blanco += movimientos_blanco * VALOR_MOVILIDAD
             score_negro += movimientos_negro * VALOR_MOVILIDAD
         except (AttributeError, TypeError) as e:
-            # Si hay error en el cálculo de movimientos, usar solo el score de piezas
             print(f"Advertencia: Error calculando movilidad: {e}")
             pass
         
@@ -105,16 +94,6 @@ class AlgoritmoMinimax:
         self.evaluador = EvaluadorTablero()
     
     def obtener_mejor_movimiento(self, tablero, jugador_actual):
-        """
-        Encuentra el mejor movimiento usando el algoritmo Minimax.
-        
-        Args:
-            tablero: Estado actual del tablero
-            jugador_actual: Jugador que debe mover
-            
-        Returns:
-            Mejor movimiento encontrado o None si no hay movimientos
-        """
         if tablero.es_final(jugador_actual):
             return None
         
@@ -125,7 +104,6 @@ class AlgoritmoMinimax:
         else:
             _, mejor_movimiento = self._min_valor(tablero, profundidad_maxima, JUGADOR_NEGRO)
         
-        # Aplicar errores ocasionales según el nivel
         if self.config.debe_cometer_error() and mejor_movimiento:
             movimientos_disponibles = list(tablero.movimientos_disponibles(jugador_actual))
             if len(movimientos_disponibles) > 1:
@@ -135,7 +113,6 @@ class AlgoritmoMinimax:
         return mejor_movimiento
     
     def _max_valor(self, tablero, profundidad, jugador_turno):
-        """Función MAX del algoritmo Minimax."""
         if tablero.es_final(jugador_turno) or profundidad == 0:
             return self.evaluador.calcular_utilidad(tablero, jugador_turno), None
         
@@ -154,7 +131,6 @@ class AlgoritmoMinimax:
         return mejor_valor, mejor_movimiento
     
     def _min_valor(self, tablero, profundidad, jugador_turno):
-        """Función MIN del algoritmo Minimax."""
         if tablero.es_final(jugador_turno) or profundidad == 0:
             return self.evaluador.calcular_utilidad(tablero, jugador_turno), None
         
@@ -181,16 +157,6 @@ class AlgoritmoMinimaxAlfaBeta:
         self.evaluador = EvaluadorTablero()
     
     def obtener_mejor_movimiento(self, tablero, jugador_actual):
-        """
-        Encuentra el mejor movimiento usando Minimax con poda Alfa-Beta.
-        
-        Args:
-            tablero: Estado actual del tablero
-            jugador_actual: Jugador que debe mover
-            
-        Returns:
-            Mejor movimiento encontrado o None si no hay movimientos
-        """
         if tablero.es_final(jugador_actual):
             return None
         
@@ -205,7 +171,6 @@ class AlgoritmoMinimaxAlfaBeta:
                 tablero, -math.inf, math.inf, profundidad_maxima, JUGADOR_NEGRO
             )
         
-        # Aplicar errores ocasionales según el nivel
         if self.config.debe_cometer_error() and mejor_movimiento:
             movimientos_disponibles = list(tablero.movimientos_disponibles(jugador_actual))
             if len(movimientos_disponibles) > 1:
@@ -215,7 +180,6 @@ class AlgoritmoMinimaxAlfaBeta:
         return mejor_movimiento
     
     def _max_valor(self, tablero, alfa, beta, profundidad, jugador_turno):
-        """Función MAX con poda Alfa-Beta."""
         if tablero.es_final(jugador_turno) or profundidad == 0:
             return self.evaluador.calcular_utilidad(tablero, jugador_turno), None
         
@@ -233,12 +197,11 @@ class AlgoritmoMinimaxAlfaBeta:
             
             alfa = max(alfa, mejor_valor)
             if beta <= alfa:
-                break  # Poda Beta
+                break
         
         return mejor_valor, mejor_movimiento
     
     def _min_valor(self, tablero, alfa, beta, profundidad, jugador_turno):
-        """Función MIN con poda Alfa-Beta."""
         if tablero.es_final(jugador_turno) or profundidad == 0:
             return self.evaluador.calcular_utilidad(tablero, jugador_turno), None
         
@@ -256,13 +219,12 @@ class AlgoritmoMinimaxAlfaBeta:
             
             beta = min(beta, mejor_valor)
             if beta <= alfa:
-                break  # Poda Alfa
+                break
         
         return mejor_valor, mejor_movimiento
 
 
 class JugadorIA(Jugador):
-    """Jugador controlado por inteligencia artificial."""
     
     def __init__(self, color, nivel=3, usar_alfa_beta=True):
         super().__init__(color)
@@ -275,27 +237,15 @@ class JugadorIA(Jugador):
             self.algoritmo = AlgoritmoMinimax(self.config)
     
     def establecer_nivel(self, nivel):
-        """Establece el nivel de dificultad de la IA."""
         return self.config.establecer_nivel(nivel)
     
     def obtener_nivel_actual(self):
-        """Obtiene la información del nivel actual."""
         return self.config.obtener_nivel_actual()
     
     def obtener_movimiento(self, tablero):
-        """
-        Calcula y retorna el mejor movimiento según la IA.
-        
-        Args:
-            tablero: Estado actual del tablero
-            
-        Returns:
-            Mejor movimiento calculado por la IA
-        """
         return self.algoritmo.obtener_mejor_movimiento(tablero, self.color)
     
     def cambiar_algoritmo(self, usar_alfa_beta=True):
-        """Cambia entre algoritmo Minimax básico y con poda Alfa-Beta."""
         self.usar_alfa_beta = usar_alfa_beta
         if usar_alfa_beta:
             self.algoritmo = AlgoritmoMinimaxAlfaBeta(self.config)
