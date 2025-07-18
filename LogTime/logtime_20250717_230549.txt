@@ -1,0 +1,248 @@
+=== LOG DE TIEMPOS DE LA IA - JUEGO DE DAMAS ===
+Inicio de sesión: 2025-07-17 23:05:49
+==================================================
+
+Configuración: Alfa-Beta | Nivel 1 | IA juega con Negras
+--------------------------------------------------
+Movimiento 1: 0.00409579 segundos
+Movimiento 2: 0.00102878 segundos
+Movimiento 3: 0.00101423 segundos
+Movimiento 4: 0.00497293 segundos
+Movimiento 5: 0.00575185 segundos
+Movimiento 6: 0.00434065 segundos
+Movimiento 7: 0.00136471 segundos
+Movimiento 8: 0.00203252 segundos
+Movimiento 9: 0.00401855 segundos
+Movimiento 10: 0.00101948 segundos
+Movimiento 11: 0.00627351 segundos
+Movimiento 12: 0.00000000 segundos
+Movimiento 13: 0.00352597 segundos
+Movimiento 14: 0.00523353 segundos
+Movimiento 15: 0.00341368 segundos
+Movimiento 16: 0.00301051 segundos
+Movimiento 17: 0.00053811 segundos
+Movimiento 18: 0.00148916 segundos
+Movimiento 19: 0.00210118 segundos
+Movimiento 20: 0.00252128 segundos
+Movimiento 21: 0.00300884 segundos
+Movimiento 22: 0.00206161 segundos
+Movimiento 23: 0.00115609 segundos
+Movimiento 24: 0.00110483 segundos
+Movimiento 25: 0.00051165 segundos
+Movimiento 26: 0.00151730 segundos
+
+--- RESUMEN DE LA PARTIDA ---
+Total de movimientos de IA: 26
+Tiempo total: 0.06710672 segundos
+Tiempo promedio: 0.00258103 segundos
+Ganador: ¡Blancas ganaron!
+==================================================
+
+
+--- NUEVA PARTIDA ---
+Inicio: 2025-07-17 23:19:12
+
+Configuración: Alfa-Beta | Nivel 2 | IA juega con Negras
+--------------------------------------------------
+Movimiento 1: 0.02952981 segundos
+Movimiento 2: 0.00649190 segundos
+Movimiento 3: 0.04238296 segundos
+Movimiento 4: 0.08594060 segundos
+Movimiento 5: 0.03122234 segundos
+Movimiento 6: 0.02830482 segundos
+Movimiento 7: 0.00405359 segundos
+Movimiento 8: 0.03259516 segundos
+Movimiento 9: 0.02111793 segundos
+Movimiento 10: 0.02237535 segundos
+Movimiento 11: 0.03509903 segundos
+Movimiento 12: 0.01204181 segundos
+Movimiento 13: 0.00100851 segundos
+Movimiento 14: 0.02320313 segundos
+Movimiento 15: 0.08667350 segundos
+Movimiento 16: 0.04444933 segundos
+Movimiento 17: 0.05637336 segundos
+Movimiento 18: 0.01253247 segundos
+Movimiento 19: 0.04237533 segundos
+Movimiento 20: 0.04581332 segundos
+Movimiento 21: 0.02094579 segundos
+Movimiento 22: 0.01207781 segundos
+Movimiento 23: 0.02791071 segundos
+Movimiento 24: 0.01515079 segundos
+Movimiento 25: 0.00200987 segundos
+Movimiento 26: 0.00101566 segundos
+
+--- RESUMEN DE LA PARTIDA ---
+Total de movimientos de IA: 26
+Tiempo total: 0.74269485 segundos
+Tiempo promedio: 0.02856519 segundos
+Ganador: ¡Blancas ganaron!
+==================================================
+
+
+--- NUEVA PARTIDA ---
+Inicio: 2025-07-17 23:21:47
+
+Configuración: Alfa-Beta | Nivel 3 | IA juega con Negras
+--------------------------------------------------
+Movimiento 1: 0.23719668 segundos
+Movimiento 2: 0.21477628 segundos
+Movimiento 3: 0.25200176 segundos
+Movimiento 4: 0.71783328 segundos
+Movimiento 5: 0.04381013 segundos
+Movimiento 6: 0.29519463 segundos
+Movimiento 7: 0.11691451 segundos
+Movimiento 8: 0.40872645 segundos
+Movimiento 9: 0.11371684 segundos
+Movimiento 10: 0.83311725 segundos
+Movimiento 11: 0.36961317 segundos
+Movimiento 12: 0.03955984 segundos
+Movimiento 13: 0.46110272 segundos
+Movimiento 14: 0.31711268 segundos
+Movimiento 15: 0.17529750 segundos
+Movimiento 16: 0.03618193 segundos
+Movimiento 17: 0.01797032 segundos
+Movimiento 18: 0.09229636 segundos
+Movimiento 19: 0.03498173 segundos
+Movimiento 20: 0.12226367 segundos
+Movimiento 21: 0.14878798 segundos
+Movimiento 22: 0.32221723 segundos
+Movimiento 23: 0.83169127 segundos
+Movimiento 24: 0.72723484 segundos
+Movimiento 25: 0.90635157 segundos
+Movimiento 26: 0.26464939 segundos
+Movimiento 27: 0.16116953 segundos
+Movimiento 28: 0.37284756 segundos
+Movimiento 29: 0.42673182 segundos
+Movimiento 30: 0.00334001 segundos
+Movimiento 31: 0.00099826 segundos
+
+--- RESUMEN DE LA PARTIDA ---
+Total de movimientos de IA: 31
+Tiempo total: 9.06568718 segundos
+Tiempo promedio: 0.29244152 segundos
+Ganador: ¡Negras ganaron!
+==================================================
+
+
+--- NUEVA PARTIDA ---
+Inicio: 2025-07-17 23:24:19
+
+Configuración: Minimax | Nivel 1 | IA juega con Negras
+--------------------------------------------------
+Movimiento 1: 0.00407696 segundos
+Movimiento 2: 0.00201726 segundos
+Movimiento 3: 0.00443554 segundos
+Movimiento 4: 0.00257015 segundos
+Movimiento 5: 0.00509834 segundos
+Movimiento 6: 0.00353909 segundos
+Movimiento 7: 0.00101829 segundos
+Movimiento 8: 0.00052905 segundos
+Movimiento 9: 0.00000000 segundos
+Movimiento 10: 0.00210857 segundos
+Movimiento 11: 0.00420785 segundos
+Movimiento 12: 0.00201201 segundos
+Movimiento 13: 0.00322962 segundos
+Movimiento 14: 0.00205278 segundos
+Movimiento 15: 0.00099444 segundos
+Movimiento 16: 0.00201011 segundos
+Movimiento 17: 0.00231576 segundos
+Movimiento 18: 0.00052762 segundos
+
+--- RESUMEN DE LA PARTIDA ---
+Total de movimientos de IA: 18
+Tiempo total: 0.04274344 segundos
+Tiempo promedio: 0.00237464 segundos
+Ganador: ¡Blancas ganaron!
+==================================================
+
+
+--- NUEVA PARTIDA ---
+Inicio: 2025-07-17 23:25:11
+
+Configuración: Minimax | Nivel 2 | IA juega con Negras
+--------------------------------------------------
+Movimiento 1: 0.09588742 segundos
+Movimiento 2: 0.00901794 segundos
+Movimiento 3: 0.10419154 segundos
+Movimiento 4: 0.03362870 segundos
+Movimiento 5: 0.23079634 segundos
+Movimiento 6: 0.14920807 segundos
+Movimiento 7: 0.00908065 segundos
+Movimiento 8: 0.16162300 segundos
+Movimiento 9: 0.10162568 segundos
+Movimiento 10: 0.03300738 segundos
+Movimiento 11: 0.20438600 segundos
+Movimiento 12: 0.18186855 segundos
+Movimiento 13: 0.02382874 segundos
+Movimiento 14: 0.00617623 segundos
+Movimiento 15: 0.23167539 segundos
+Movimiento 16: 0.11988974 segundos
+Movimiento 17: 0.00103140 segundos
+Movimiento 18: 0.01411963 segundos
+Movimiento 19: 0.08865070 segundos
+Movimiento 20: 0.00768399 segundos
+Movimiento 21: 0.01495481 segundos
+Movimiento 22: 0.01297665 segundos
+Movimiento 23: 0.00051045 segundos
+
+--- RESUMEN DE LA PARTIDA ---
+Total de movimientos de IA: 23
+Tiempo total: 1.83581901 segundos
+Tiempo promedio: 0.07981822 segundos
+Ganador: ¡Negras ganaron!
+==================================================
+
+
+--- NUEVA PARTIDA ---
+Inicio: 2025-07-17 23:25:58
+
+Configuración: Minimax | Nivel 3 | IA juega con Negras
+--------------------------------------------------
+Movimiento 1: 2.32471585 segundos
+Movimiento 2: 1.78539467 segundos
+Movimiento 3: 0.36397672 segundos
+Movimiento 4: 7.20662546 segundos
+Movimiento 5: 1.28721499 segundos
+Movimiento 6: 0.96641541 segundos
+Movimiento 7: 0.38512444 segundos
+Movimiento 8: 9.81020451 segundos
+Movimiento 9: 7.69174170 segundos
+Movimiento 10: 5.43415141 segundos
+Movimiento 11: 0.65288138 segundos
+Movimiento 12: 2.71486425 segundos
+Movimiento 13: 0.24802470 segundos
+Movimiento 14: 0.08440089 segundos
+Movimiento 15: 2.10856676 segundos
+Movimiento 16: 1.47653913 segundos
+Movimiento 17: 0.62718034 segundos
+Movimiento 18: 0.65456724 segundos
+Movimiento 19: 0.21355510 segundos
+Movimiento 20: 0.01773787 segundos
+Movimiento 21: 0.04510951 segundos
+Movimiento 22: 0.01608610 segundos
+Movimiento 23: 0.10178351 segundos
+Movimiento 24: 0.37076855 segundos
+Movimiento 25: 1.62570095 segundos
+Movimiento 26: 3.67474341 segundos
+Movimiento 27: 6.19605017 segundos
+Movimiento 28: 8.28171802 segundos
+Movimiento 29: 2.60903406 segundos
+Movimiento 30: 9.68367124 segundos
+Movimiento 31: 2.01384425 segundos
+Movimiento 32: 0.06496978 segundos
+Movimiento 33: 0.35119557 segundos
+Movimiento 34: 0.34609270 segundos
+Movimiento 35: 0.00000000 segundos
+
+--- RESUMEN DE LA PARTIDA ---
+Total de movimientos de IA: 35
+Tiempo total: 81.43465066 segundos
+Tiempo promedio: 2.32670430 segundos
+Ganador: ¡Negras ganaron!
+==================================================
+
+
+--- NUEVA PARTIDA ---
+Inicio: 2025-07-17 23:29:39
+
+Partida de Elian
